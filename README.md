@@ -127,7 +127,7 @@ linkedin-quarterly-report-automation/
                       except:
                           continue
               if not all_years:
-                  raise ValueError(f"❌ {file_path} içinde geçerli yıl bulunamadı.")
+                  raise ValueError(f" {file_path} içinde geçerli yıl bulunamadı.")
               year_series = pd.Series(all_years)
               return int(year_series.mode()[0])
           
@@ -160,7 +160,7 @@ linkedin-quarterly-report-automation/
                   best_df['Year'] = dominant_year
                   return best_df
               else:
-                  raise ValueError(f"❌ {filepath} couldn't find any valid date.")
+                  raise ValueError(f" {filepath} couldn't find any valid date.")
           
           
           
@@ -242,7 +242,7 @@ linkedin-quarterly-report-automation/
                                       cell.fill = PatternFill(start_color=renk, end_color=renk, fill_type="solid")
               yeni_dosya = dosya_adi.replace(".xlsx", "_renkli.xlsx")
               wb.save(yeni_dosya)
-              print(f"🎨 Coloring completed: {yeni_dosya}")
+              print(f" Coloring completed: {yeni_dosya}")
           
           # --- GUI Sınıfı ---
           class ExcelComparerApp:
@@ -316,27 +316,27 @@ linkedin-quarterly-report-automation/
                       df_previous['date'] = pd.to_datetime(df_previous['date'], errors='coerce')
                       df_previous = df_previous[df_previous['date'].dt.year == reference_year].copy()
           
-                      # ⬇️ TARİH, ÇEYREK VE AY (Quarter & Month hesaplamaları)
+                      #  TARİH, ÇEYREK VE AY (Quarter & Month hesaplamaları)
                       for df in [df_previous, df_current]:
                           df['date'] = pd.to_datetime(df['date'], errors='coerce')
                           df.dropna(subset=['date'], inplace=True)
                           df['Quarter'] = df['date'].dt.to_period('Q')
                           df['Month'] = df['date'].dt.to_period('M')
           
-                      # ⬇️ engagement_rate HESAPLAMA VEYA DÜZELTME
+                      #  engagement_rate HESAPLAMA VEYA DÜZELTME
                       def ensure_engagement_rate(df, label):
                           if 'engagement' in df.columns and 'impressions' in df.columns:
                               df['engagement_rate'] = (df['engagement'] / df['impressions']) * 100
-                              print(f"✅ {label}: engagement_rate yeniden hesaplandı.")
+                              print(f" {label}: engagement_rate yeniden hesaplandı.")
                           elif 'engagement_rate' in df.columns:
                               mean_val = df['engagement_rate'].mean()
                               if mean_val < 1:  # oran formatında olabilir
                                   df['engagement_rate'] *= 100
-                                  print(f"ℹ️ {label}: engagement_rate oran formatındaydı, % formatına çevrildi.")
+                                  print(f" {label}: engagement_rate oran formatındaydı, % formatına çevrildi.")
                               else:
-                                  print(f"ℹ️ {label}: engagement_rate zaten % formatında.")
+                                  print(f" {label}: engagement_rate zaten % formatında.")
                           else:
-                              raise ValueError(f"❌ {label}: Ne engagement ne de engagement_rate bulunamadı.")
+                              raise ValueError(f" {label}: Ne engagement ne de engagement_rate bulunamadı.")
           
                       # Her iki DataFrame'e uygula
                       ensure_engagement_rate(df_previous, "df_previous")
@@ -373,11 +373,11 @@ linkedin-quarterly-report-automation/
                       df_current['ER Diff'] = df_current['engagement_rate'] - df_current['Ref ER']
                       df_current['Impression Diff'] = df_current['impressions'] - df_current['Ref Impressions']
           
-                      # ⬇️ 1. Farkları hesapla
+                      #  1. Farkları hesapla
                       df_current["ER Diff"] = df_current["engagement_rate"] - df_current["Ref ER"]
                       df_current["Impression Diff"] = df_current["impressions"] - df_current["Ref Impressions"]
           
-                      # ⬇️ 2. Açıklamalı karşılaştırmaları oluştur
+                      #  2. Açıklamalı karşılaştırmaları oluştur
                       def er_aciklama(er, ref):
                           if pd.isna(er) or pd.isna(ref):
                               return "-"
@@ -401,7 +401,7 @@ linkedin-quarterly-report-automation/
                       df_current["ER Comparison"] = df_current.apply(lambda row: er_aciklama(row["engagement_rate"], row["Ref ER"]), axis=1)
                       df_current["Impression Comparison"] = df_current.apply(lambda row: imp_aciklama(row["impressions"], row["Ref Impressions"]), axis=1)
           
-                      # ⬇️ 3. Etiketleme 
+                      #  3. Etiketleme 
               
                       def er_diff_etiket(diff):
                           if pd.isna(diff):
@@ -462,11 +462,11 @@ linkedin-quarterly-report-automation/
                       os.makedirs(output_dir, exist_ok=True)
                       output_path = os.path.join(output_dir, f"{current_year}_vs_{reference_year}_results.xlsx")
                       df_current.to_excel(output_path, index=False)
-                      # 📊 Grafik çizimlerini PNG olarak kaydet
+                      #  Grafik çizimlerini PNG olarak kaydet
                       save_pie_chart(df_current, "ER Label", "er_label_pie.png")
                       save_pie_chart(df_current, "Impression Label", "impression_label_pie.png")
           
-                      # 📥 Grafik görsellerini Excel'e göm
+                      #  Grafik görsellerini Excel'e göm
                       embed_chart_to_excel(output_path, "er_label_pie.png", sheet_name="Charts", cell="B2")
                       embed_chart_to_excel(output_path, "impression_label_pie.png", sheet_name="Charts", cell="L2")
                       # Renkli dosya
@@ -475,7 +475,7 @@ linkedin-quarterly-report-automation/
                       
                                       
                       
-                      self.txt_result.insert(tk.END, f"✅ Comparison completed!\n")
+                      self.txt_result.insert(tk.END, f" Comparison completed!\n")
                       self.txt_result.insert(tk.END, f"Normal output file: {output_path}\n")
                       self.txt_result.insert(tk.END, f"Colorized output file: {renkli_path}\n")
                   except Exception as e:
